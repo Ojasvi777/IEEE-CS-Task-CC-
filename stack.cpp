@@ -1,83 +1,78 @@
-//stack (level 1)
 #include <iostream>
-#include <vector>
-
 using namespace std;
+#define MAX_SIZE 100
 
-class MyStack {
+class Stack {
 private:
-    vector<int> stack;
-    vector<int> minStack;
-    vector<int> maxStack;
+    int stack[MAX_SIZE];    
+    int minStack[MAX_SIZE];  
+    int maxStack[MAX_SIZE]; 
+    int topIndex;           
 
 public:
-    void push(int x) {
-        stack.push_back(x);
-
-        // Maintaining min stack
-        if (minStack.empty() || x <= minStack.back())
-            minStack.push_back(x);
-        else
-            minStack.push_back(minStack.back());
-
-        // Maintaining max stack
-        if (maxStack.empty() || x >= maxStack.back())
-            maxStack.push_back(x);
-        else
-            maxStack.push_back(maxStack.back());
+    Stack() {
+        topIndex = -1;  
     }
-
-    void pop() {
-        if (stack.empty()) {
-            cout << "Stack is empty!\n";
+    void push(int x) {
+        if (topIndex >= MAX_SIZE - 1) {
+            cout << "Stack Overflow!\n";
             return;
         }
-        stack.pop_back();
-        minStack.pop_back();
-        maxStack.pop_back();
-    }
 
+        topIndex++;  
+        stack[topIndex] = x; 
+        if (topIndex == 0 || x <= minStack[topIndex - 1]) {
+            minStack[topIndex] = x;
+        } else {
+            minStack[topIndex] = minStack[topIndex - 1];
+        }
+        if (topIndex == 0 || x >= maxStack[topIndex - 1]) {
+            maxStack[topIndex] = x;
+        } else {
+            maxStack[topIndex] = maxStack[topIndex - 1];
+        }
+    }
+    void pop() {
+        if (topIndex >= 0) {
+            topIndex--; 
+        } else {
+            cout << "Stack is empty!\n";
+        }
+    }
     int top() {
-        if (stack.empty()) {
-            cout << "The Stack is empty.\n";
-            return -1;
+        if (topIndex >= 0) {
+            return stack[topIndex];
         }
-        return stack.back();
+        cout << "Stack is empty!\n";
+        return -1;  
     }
-
     int getMin() {
-        if (minStack.empty()) {
-            cout << "The Stack is empty.\n";
-            return -1;
+        if (topIndex >= 0) {
+            return minStack[topIndex];
         }
-        return minStack.back();
+        cout << "Stack is empty!\n";
+        return -1;
     }
-
     int getMax() {
-        if (maxStack.empty()) {
-            cout << "The Stack is empty.\n";
-            return -1;
+        if (topIndex >= 0) {
+            return maxStack[topIndex];
         }
-        return maxStack.back();
+        cout << "Stack is empty!\n";
+        return -1;
     }
 };
-
 int main() {
-    MyStack s;
-
+    Stack s;
     s.push(5);
     s.push(2);
     s.push(8);
     s.push(1);
-
     cout << "Top element: " << s.top() << endl;
     cout << "Minimum element: " << s.getMin() << endl;
     cout << "Maximum element: " << s.getMax() << endl;
-
     s.pop();
     cout << "After popping, Top: " << s.top() << endl;
     cout << "After popping, Min: " << s.getMin() << endl;
     cout << "After popping, Max: " << s.getMax() << endl;
-
     return 0;
 }
